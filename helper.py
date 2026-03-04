@@ -3,6 +3,7 @@ from wordcloud import WordCloud
 import pandas as pd
 from collections import Counter
 import emoji
+import app
 
 extract = URLExtract()
 
@@ -60,7 +61,7 @@ def create_wordcloud(selected_user,df):
 
 def most_common_words(selected_user,df):
 
-    f = open("data/stop_hinglish.txt", "r")
+    f = open("stop_hinglish.txt", "r")
     stop_words = f.read()
 
     if selected_user != 'Overall':
@@ -79,15 +80,16 @@ def most_common_words(selected_user,df):
     most_common_df = pd.DataFrame(Counter(words).most_common(20))
     return most_common_df
 
-def emoji_helper(selected_user,df):
+def emoji_helper(selected_user, df):
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 
     emojis = []
     for message in df['message']:
-        emojis.extend([c for c in message if c in emoji.UNICODE_EMOJI['en']])
+        emojis.extend([c for c in message if c in emoji.EMOJI_DATA])
 
-    emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))
+    emoji_df = pd.DataFrame(Counter(emojis).most_common(), 
+                            columns=['emoji', 'count'])
 
     return emoji_df
 
