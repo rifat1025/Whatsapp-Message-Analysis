@@ -7,17 +7,20 @@ import pandas as pd
 
 st.sidebar.title ("Whatapp message analyzer")
 
-uploaded_file = st.sidebar.file_uploader("Choose a file")
+uploaded_file = st.file_uploader("Upload Image", key="image_upload")
 if uploaded_file is not None:
     byte_data=uploaded_file.getvalue()
     data=byte_data.decode("utf-8")
     df=preprocessor.preprocess(data)
 
     # fetch unique users
-    user_list=df['user'].unique().tolist()
-    user_list.remove('group_notification')
+    user_list = df['user'].unique().tolist()
+
+    if 'group_notification' in user_list:
+        user_list.remove('group_notification')
+
     user_list.sort()
-    user_list.insert(0,"Overall")
+    user_list.insert(0, "Overall")
 
     selected_user = st.sidebar.selectbox("Show analysis wrt",user_list)
 
